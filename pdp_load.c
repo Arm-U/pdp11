@@ -50,7 +50,7 @@ void test_load(const char* filename) {
 
 int main(int argc, char* argv[]) {
 	test_mem();
-	test_load(argv[1]);
+	test_load(argv[argc - 1]);
 	return 0;
 }
 
