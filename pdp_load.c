@@ -14,7 +14,8 @@ byte b_read  (Adress adr);
 void b_write (Adress adr, byte b);
 word w_read  (Adress adr);
 void w_write (Adress adr, word w);
-void load_file();
+//void load_file();
+void load_file(const char* filename);
 void mem_dump(Adress adr, word w);
 
 void test_mem() {
@@ -40,13 +41,16 @@ void test_mem() {
     word wress = w_read(a);
     printf("%04hx = %04hx\n", w, wress);
     assert(w == wress);*/
-	
-	load_file();
+}
+
+void test_load(const char* filename) {
+	load_file(filename);
 	mem_dump(0x40, 4);
 }
 
-int main() {
+int main(int argc, char* argv[]) {
 	test_mem();
+	test_load(argv[1]);
 	return 0;
 }
 
@@ -74,7 +78,7 @@ void w_write (Adress adr, word w) {
 	//printf("b1 = %02hhx, b2 = %02hhx\n", b1, b2);
 }
 
-void load_file() {
+/*void load_file() {
 	int adr, n;
 	while(0 < scanf("%x%x", &adr, &n)) {
 		for (int i = 0; i < n; ++i) {
@@ -84,6 +88,21 @@ void load_file() {
 			++adr;
 		}
 	}
+}*/
+
+void load_file(const char* filename) {
+	FILE* stream = fopen(filename, "r");
+	while (!feof(stream)) {
+		int adr, n;
+		fscanf(stream, "%x%x", &adr, &n);
+		for (int i = 0; i < n; ++i) {
+			int _byte;
+			fscanf(stream, "%x", &_byte);
+			b_write(adr, _byte);
+			++adr;
+		}
+	}
+	fclose(stream);
 }
 
 void mem_dump(Adress start, word n) {
