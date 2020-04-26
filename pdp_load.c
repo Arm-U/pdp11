@@ -59,7 +59,6 @@ void test_mem() {
 	b_write(a + 1, b1);
 	word wress = w_read(a);
 	printf("ww/br \t %04hx = %02hhx%02hhx\n", wress, b1, b0);
-	printf("%06 = %03o%03o\n", wress, b1, b0);
 	assert(w == wress);
 }
 
@@ -73,7 +72,7 @@ int main(int argc, char* argv[]) {
 	if (argc > 1)
 		test_load(argv[argc - 1]);
 	else {
-		perror("add file to read for start program");
+		printf("Usage: %s FILE\n", argv[0]);
 		return 0;
 	}
 	return 0;
@@ -89,7 +88,7 @@ void b_write(Adress adr, byte b) {
 
 word w_read(Adress adr) {
 	if (adr % 2) {
-		perror("Adress should be even for read word");
+		printf("Erorr: adress should be even for read word");
 		exit(1);
 	}
 	word w = ((word)mem[adr + 1]) << 8;
@@ -100,7 +99,7 @@ word w_read(Adress adr) {
 
 void w_write(Adress adr, word w) {
 	if (adr % 2) {
-		perror("Adress should be even for write word");
+		printf("Erorr: adress should be even for write word");
 		exit(1);
 	}
 	word w1 = w >> 8;
@@ -126,7 +125,7 @@ void w_write(Adress adr, word w) {
 void load_file(const char* filename) {
 	FILE* stream = fopen(filename, "r");
 	if (stream == NULL) {
-		perror("Wrong file");
+		perror(filename);
 		exit(1);
 	}
 	while (!feof(stream)) {
