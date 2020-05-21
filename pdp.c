@@ -26,10 +26,12 @@ void do_add() {
 	w_write(dd.adr, dd.val + ss.val);
 }
 
-void do_nothing() {}
+void do_nothing() {
+	exit(1);
+}
 
 Command cmd[] = {
-	{0170000, 0010000, "mov", do_mov, 2},
-	{0170000, 0060000, "add", do_add, 2},
+	{0170000, 0010000, "mov", do_mov, 3},
+	{0170000, 0060000, "add", do_add, 3},
 	{0xFFFF , 0000000, "halt", do_halt, 0}
 };
