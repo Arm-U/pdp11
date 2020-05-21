@@ -28,12 +28,19 @@ typedef struct {
 	word opcode;
 	char * name;
 	void (*do_func)(void);
+	int params;
 } Command;
 
-struct Argument {
+typedef struct {
 	word val;
 	word adr;
-} ss, dd;
+} Argument;
 
 void run();
 void trace(const char* format, ...);
+
+#define NO_PARAMS 0
+#define HAS_DD 1
+#define HAS_SS 2
+
+void print_reg();
