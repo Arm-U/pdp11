@@ -12,7 +12,7 @@ void test_mem() {
     //printf("%02hhx = %02hhx\n", b0, bres);   // first test
     assert(b0 == bres);
     
-    Adress a = 4;
+    Adress a = 10;
     byte b1 = 0x0b;
     b0 = 0x0a;
     word w = 0x0b0a;
@@ -22,14 +22,14 @@ void test_mem() {
     //printf("ww/br \t %04hx = %02hhx%02hhx\n", wress, b1, b0);
     assert(w == wress);
     
-    a = 6;
+    a = 16;
     w = 0x0cab;
     w_write(a, w);
     wress = w_read(a);
     //printf("%04hx = %04hx\n", w, wress);
     assert(w == wress);
 
-	a = 8;
+	a = 18;
 	w = 0xff0c;
 	w_write(a, w);
 	b1 = b_read(a + 1);
@@ -38,7 +38,7 @@ void test_mem() {
 	assert(((byte)(w >> 8)) == b1);
 	assert(((byte)w) == b2);
 
-	a = 6;
+	a = 16;
 	b1 = 0x0b;
 	b0 = 0x0a;
 	w = 0x0b0a;
@@ -49,8 +49,16 @@ void test_mem() {
 	assert(w == wress);
 }
 
+int trace_mode = 0;
+
 int main(int argc, char* argv[]) {
 	test_mem();
+	for (int i = 0; i < argc; ++i) {
+		if (0 == strcmp(argv[i], "-t")) {
+			trace_mode = 1;
+			break;
+		}
+	}
 	if (argc > 1)
 		load_file(argv[argc - 1]);
 	else {
@@ -80,15 +88,20 @@ word w_read(Adress adr) {
 }
 
 void w_write(Adress adr, word w) {
-	if (adr % 2) {
-		printf("Erorr: adress should be even for write word");
-		exit(1);
+	if (adr < 8) {
+		reg[adr] = w;
 	}
-	word w1 = w >> 8;
-	byte b1 = ((byte)w);
-	mem[adr] = b1;
-	byte b2 = ((byte)w1);
-	mem[adr + 1] = b2;
+	else {
+		if (adr % 2) {
+			printf("Erorr: adress should be even for write word");
+			exit(1);
+		}
+		word w1 = w >> 8;
+		byte b1 = ((byte)w);
+		mem[adr] = b1;
+		byte b2 = ((byte)w1);
+		mem[adr + 1] = b2;
+	}
 }
 
 void load_file(const char* filename) {
@@ -121,9 +134,11 @@ void mem_dump(Adress start, word n) {
 }
 
 void trace(const char* format, ...) {
-	va_list ap;
-	va_start(ap, format);
-	vprintf(format, ap);
-	va_end(ap);
+	if (trace_mode) {
+		va_list ap;
+		va_start(ap, format);
+		vprintf(format, ap);
+		va_end(ap);
+	}
 }
 
