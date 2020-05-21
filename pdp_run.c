@@ -19,21 +19,18 @@ void run() {
 			if ( (w & cmd[i].mask) == cmd[i].opcode) {
 				trace(cmd[i].name);
 				trace(" ");
-				if (cmd[i].params == 0) {}
-				else if (cmd[i].params == 1) {
+				if (cmd[i].params & HAS_DD) {
 					dd = get_mr(w);
 				}
-				else if (cmd[i].params == 2) {
+				if (cmd[i].params & HAS_SS) {
 					ss = get_mr(w >> 6);
-					dd = get_mr(w);
 				}
 				cmd[i].do_func();
 				break;
 			}
 			if (i == 3) {
-					trace("unknown command");
-					do_nothing();
-					break;
+				trace("unknown command");
+				do_nothing();
 			}
 		}
 		trace("\n");
@@ -60,7 +57,7 @@ Argument get_mr(word w) {
 			res.val = w_read(res.adr);   // to do b_read
 			reg[r] += 2;                 // to do +1
 			if (r == 7)
-				trace("#%o ", res.val);
+				trace("#%06o ", res.val);
 			else
 				trace("R%o ", r);
 			break;
