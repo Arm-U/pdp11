@@ -28,7 +28,7 @@ typedef struct {
 	word opcode;
 	char * name;
 	void (*do_func)(void);
-	int params;
+	char params;
 } Command;
 
 typedef struct {
