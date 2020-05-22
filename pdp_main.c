@@ -7,8 +7,8 @@
 
 void test_mem() {
     byte b0 = 0x0a;
-    b_write(2, b0);
-    byte bres = b_read(2);
+    b_write(10, b0);
+    byte bres = b_read(10);
     //printf("%02hhx = %02hhx\n", b0, bres);   // first test
     assert(b0 == bres);
     
@@ -74,7 +74,14 @@ byte b_read(Adress adr) {
 }
 
 void b_write(Adress adr, byte b) {
-	mem[adr] = b;
+	if (adr < 8) {
+		if ((b >> 7) == 0) 
+			reg[adr] = 0x0000 | b;
+		else 
+			reg[adr] = 0xFF00 | b;
+	}
+	else
+		mem[adr] = b;
 }
 
 word w_read(Adress adr) {
