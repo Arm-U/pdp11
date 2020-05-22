@@ -22,6 +22,7 @@ void do_halt();
 void do_mov();
 void do_add();
 void do_nothing();
+void do_sub();
 
 typedef struct {
 	word mask;
@@ -42,5 +43,7 @@ void trace(const char* format, ...);
 #define NO_PARAMS 0
 #define HAS_DD 1
 #define HAS_SS 2
+#define HAS_NN 4
+#define HAS_R 8
 
 void print_reg();
