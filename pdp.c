@@ -40,10 +40,16 @@ void do_clear() {
 	w_write(dd.adr, 0);
 }
 
+void do_movb() {
+	b_write(dd.adr, ss.val);
+}
+
 Command cmd[] = {
-	{0170000, 0010000, "mov", do_mov, 3},
-	{0170000, 0060000, "add", do_add, 3},
-	{0xFFFF , 0000000, "halt", do_halt, 0},
-	{0177000, 0077000, "sob", do_sob, 12},
-	{0177700, 0005000, "clr", do_clear, 1}
+	{0170000, 0010000, "mov", do_mov, HAS_DD | HAS_SS},
+	{0170000, 0060000, "add", do_add, HAS_DD | HAS_SS},
+	{0xFFFF , 0000000, "halt", do_halt, NO_PARAMS},
+	{0177000, 0077000, "sob", do_sob, HAS_NN | HAS_R},
+	{0177700, 0005000, "clr", do_clear, HAS_DD},
+	{0170000, 0110000, "movb", do_movb, HAS_DD | HAS_SS},
+	{0177777, 0177777, "unknown", do_nothing, NO_PARAMS}
 };
