@@ -23,6 +23,7 @@ void do_mov();
 void do_add();
 void do_nothing();
 void do_sub();
+void do_movb();
 
 typedef struct {
 	word mask;
