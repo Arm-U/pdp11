@@ -11,21 +11,24 @@ Argument get_mr(word w);
 Argument get_nn(word w);
 Argument get_r(word w);
 
+int is_byte;
+
 void run() {
 	pc = 01000;
 	while(1) {
 		word w = w_read(pc);
 		trace("%06o %06o: ", pc, w);
 		pc += 2;
-		for (int i = 0; i <= 5; ++i) {
+		for (int i = 0; 1; ++i) {
 			if ( (w & cmd[i].mask) == cmd[i].opcode) {
 				trace(cmd[i].name);
 				trace(" ");
-				if (cmd[i].params & HAS_DD) {
-					dd = get_mr(w);
-				}
+				is_byte = w & 0100000;
 				if (cmd[i].params & HAS_SS) {
 					ss = get_mr(w >> 6);
+				}
+				if (cmd[i].params & HAS_DD) {
+					dd = get_mr(w);
 				}
 				if (cmd[i].params & HAS_NN) {
 					nn = get_nn(w);
@@ -35,10 +38,6 @@ void run() {
 				}
 				cmd[i].do_func();
 				break;
-			}
-			if (i == 5) {
-				trace("unknown command");
-				do_nothing();
 			}
 		}
 		trace("\n");
@@ -57,17 +56,42 @@ Argument get_mr(word w) {
 			break;
 		case 1:    // (R3)
 			res.adr = reg[r];
-			res.val = w_read(res.adr);   // to do b_read
-			trace("R%o ", r);
+			if (is_byte)
+				res.val = b_read(res.adr);
+			else 
+				res.val = w_read(res.adr);   // to do b_read
+			trace("(R%o) ", r);
 			break;
 		case 2:    // (R3)+
 			res.adr = reg[r];
-			res.val = w_read(res.adr);   // to do b_read
-			reg[r] += 2;                 // to do +1
+			if (is_byte) {
+				res.val = b_read(res.adr);  
+				reg[r] += 1;  
+			}
+			else {
+				res.val = w_read(res.adr);   // to do b_read
+				reg[r] += 2;			// to do +1
+			}
 			if (r == 7)
 				trace("#%06o ", res.val);
 			else
-				trace("R%o ", r);
+				trace("(R%o)+ ", r);
+			break;
+		case 4:   //  -(R3)
+			if (is_byte) {
+				reg[r] -= 1;
+				res.adr = reg[r];
+				res.val = b_read(res.adr);
+			}
+			else {
+				reg[r] -= 2;
+				res.adr = reg[r];
+				res.val = w_read(res.adr);
+			}
+			if (r == 7)
+				trace("#%06o ", res.val);
+			else
+				trace("-(R%o) ", r);
 			break;
 		default:
 			fprintf(stderr, 
