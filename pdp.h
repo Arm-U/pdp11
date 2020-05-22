@@ -46,5 +46,9 @@ void trace(const char* format, ...);
 #define HAS_SS 2
 #define HAS_NN 4
 #define HAS_R 8
+#define HAS_XX 16
 
 void print_reg();
+
+void set_NZ();
+void set_C();
