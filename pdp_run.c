@@ -5,11 +5,12 @@
 extern Command cmd[];
 extern word reg[8];
 
-Argument ss, dd, nn, r;
+Argument ss, dd, nn, r, xx;
 
 Argument get_mr(word w);
 Argument get_nn(word w);
 Argument get_r(word w);
+Argument get_xx(word w);
 
 int is_byte;
 
@@ -36,7 +37,12 @@ void run() {
 				if (cmd[i].params & HAS_R) {
 					r = get_r(w);
 				}
+				if (cmd[i].params & HAS_XX) {
+					xx = get_xx(w);
+				}
 				cmd[i].do_func();
+				//trace("\n");
+				//print_reg();
 				break;
 			}
 		}
@@ -113,6 +119,17 @@ Argument get_r(word w) {  //reg
 	int r = (w >> 6) & 7; // register
 	res.adr = r;
 	trace("R%o ", r);
+	return res;
+}
+
+Argument get_xx(word w) {  // xx
+	Argument res;
+	int val;
+	if ((w & 0x00FF) >> 7 == 0)
+		val = w & 0x00FF;
+	else
+		val = (w & 0x00FF) - 0400;
+	res.val = val;
 	return res;
 }
  
