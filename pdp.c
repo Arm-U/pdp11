@@ -88,6 +88,19 @@ void do_tstb() {
 	set_C(0);
 }
 
+void do_jsr() {
+	w_write(sp, reg[r.adr]);
+	sp += 2;
+	reg[r.adr] = pc;
+	pc = dd.adr;
+}
+
+void do_rts() {
+	pc = reg[r.adr];
+	sp -= 2;
+	w_write(r.adr, w_read(sp));
+}
+
 Command cmd[] = {
 	{0170000, 0010000, "mov", do_mov, HAS_DD | HAS_SS},
 	{0170000, 0060000, "add", do_add, HAS_DD | HAS_SS},
@@ -100,5 +113,7 @@ Command cmd[] = {
 	{0xFF00, 0x8000, "bpl", do_bpl, HAS_XX},
 	{0177700, 0005700, "tst", do_tst, HAS_DD},
 	{0177700, 0105700, "tstb", do_tstb, HAS_DD},
+	{0177000, 0004000, "jsr", do_jsr, HAS_DD | HAS_R},
+	{0177770, 0000200, "rts", do_rts, HAS_RL},
 	{0x0000, 0x0000, "unknown", do_nothing, NO_PARAMS}
 };
