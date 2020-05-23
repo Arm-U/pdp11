@@ -79,13 +79,11 @@ void do_bpl() {
 }
 
 void do_tst() {
-	//set_NZ((int)(dd.val << 7));
 	set_NZ(dd.val);
 	set_C(0);
 }
 
 void do_tstb() {
-	//set_NZ((int)(dd.val << 7));
 	set_NZ(dd.val);
 	set_C(0);
 }
