@@ -115,7 +115,10 @@ Argument get_mr(word w) {
 			pc += 2;
 			res.adr = x + reg[r];
 			res.val = w_read(res.adr);
-			trace("%o(R%o) ", x, r);
+			if (r == 7)
+				trace("%06o ", res.adr);
+			else
+				trace("%o(R%o) ", x, r);
 			break;
 		default:
 			fprintf(stderr, 
