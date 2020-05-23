@@ -83,6 +83,12 @@ Argument get_mr(word w) {
 			else
 				trace("(R%o)+ ", r);
 			break;
+		case 3:   //  @(R3)+
+			res.adr = reg[r];
+			res.adr = w_read(res.adr);
+			res.val = w_read(res.adr);
+			reg[r] += 2;
+			break;
 		case 4:   //  -(R3)
 			if (is_byte) {
 				reg[r] -= 1;
