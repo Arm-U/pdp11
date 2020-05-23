@@ -65,6 +65,7 @@ int main(int argc, char* argv[]) {
 		printf("Usage: %s FILE\n", argv[0]);
 		return 0;
 	}
+	w_write(ostat, 1);
 	run();
 	return 0;
 }
@@ -82,6 +83,8 @@ void b_write(Adress adr, byte b) {
 	}
 	else
 		mem[adr] = b;
+	if (adr == odata)
+		printf("%c", b);
 }
 
 word w_read(Adress adr) {
@@ -109,6 +112,8 @@ void w_write(Adress adr, word w) {
 		byte b2 = ((byte)w1);
 		mem[adr + 1] = b2;
 	}
+	if (adr == odata)
+		printf("%c", w);
 }
 
 void load_file(const char* filename) {
