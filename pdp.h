@@ -17,6 +17,7 @@ void mem_dump(Adress adr, word w);
 
 word reg[8];
 #define pc reg[7]
+#define sp reg[6]
 
 void do_halt();
 void do_mov();
@@ -31,6 +32,8 @@ void do_beq();
 void do_bpl();
 void do_tst();
 void do_tstb();
+void do_jsr();
+void do_rts();
 
 typedef struct {
 	word mask;
@@ -54,6 +57,7 @@ void trace(const char* format, ...);
 #define HAS_NN 4
 #define HAS_R 8
 #define HAS_XX 16
+#define HAS_RL 32  // when register last 3 bytes
 
 void print_reg();
 
