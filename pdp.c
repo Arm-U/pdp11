@@ -8,24 +8,16 @@ extern int is_byte;
 int N, Z, C;
 
 void set_NZ(int w) {
-	if (w == 0) 
-		Z = 1;
-	else 
-		Z = 0;
-	if (is_byte)
-		N = (w >> 7) & 1;
-	else
-		N = (w >> 15) & 1;
+	 Z = (w == 0);
+     N = (is_byte ? w >> 7 : w >> 15) & 1;
 }
 
 void set_C(int w) {
-	if (is_byte)
-		C = (w >> 8) & 1;
-	else
-		C = (w >> 16) & 1;
+	C = (is_byte ? w >> 8 : w >> 16) & 1;
 }
 
 void print_reg() {
+	printf("\n");
 	for (int i = 0; i < 8; ++i) {
 		printf("r%d: %06o ", i, reg[i]);
 	}
@@ -33,7 +25,6 @@ void print_reg() {
 }
 
 void do_halt() {
-	trace("\n");
 	print_reg();
 	trace("THE END!!!\n");
 	exit(0);
@@ -82,6 +73,23 @@ void do_beq() {
 		do_br();
 }
 
+void do_bpl() {
+	if (N == 0)
+		do_br();
+}
+
+void do_tst() {
+	//set_NZ((int)(dd.val << 7));
+	set_NZ(dd.val);
+	set_C(0);
+}
+
+void do_tstb() {
+	//set_NZ((int)(dd.val << 7));
+	set_NZ(dd.val);
+	set_C(0);
+}
+
 Command cmd[] = {
 	{0170000, 0010000, "mov", do_mov, HAS_DD | HAS_SS},
 	{0170000, 0060000, "add", do_add, HAS_DD | HAS_SS},
@@ -91,5 +99,8 @@ Command cmd[] = {
 	{0170000, 0110000, "movb", do_movb, HAS_DD | HAS_SS},
 	{0xFF00, 0x0100, "br", do_br, HAS_XX},
 	{0xFF00, 0x0300, "beq", do_beq, HAS_XX},
+	{0xFF00, 0x8000, "bpl", do_bpl, HAS_XX},
+	{0177700, 0005700, "tst", do_tst, HAS_DD},
+	{0177700, 0105700, "tstb", do_tstb, HAS_DD},
 	{0x0000, 0x0000, "unknown", do_nothing, NO_PARAMS}
 };
