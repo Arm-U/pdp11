@@ -23,7 +23,14 @@ void do_mov();
 void do_add();
 void do_nothing();
 void do_sub();
+void do_clear();
+void do_clear();
 void do_movb();
+void do_br();
+void do_beq();
+void do_bpl();
+void do_tst();
+void do_tstb();
 
 typedef struct {
 	word mask;
@@ -52,3 +59,6 @@ void print_reg();
 
 void set_NZ();
 void set_C();
+
+#define ostat 0177564  // display status register
+#define odata 0177566  // display data register
